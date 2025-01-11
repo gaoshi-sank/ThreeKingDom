@@ -37,7 +37,7 @@ public:
 	virtual void Draw();
 
 	// 设置绘制位置
-	virtual void SetLocaiton(int x, int y);
+	virtual void SetLocation(int x, int y);
 
 	// 设置绘制大小
 	virtual void SetSize(int w, int h);
@@ -45,6 +45,16 @@ public:
 	// 设置旋转 
 	// 暂未实装
 	virtual void SetRotate(float angle);
+
+	// 获取绘制位置
+	virtual void GetLocation(int& x, int& y);
+
+	// 获取绘制大小
+	virtual void GetSize(int& w, int& h);
+
+	// 获取旋转
+	// 暂未实装
+	virtual void GetRotate(float& angle);
 
 	// 重设布局 
 	// 水平格式: 居中
@@ -60,6 +70,7 @@ public:
 
 	// 重设颜色 
 	void ReSetColor(int red, int green, int blue);
+
 
 };
 

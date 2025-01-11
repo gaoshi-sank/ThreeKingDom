@@ -126,7 +126,7 @@ void UI_CheckBox::AddStaticText(const std::string& text) {
 	}
 
 	if (_text) {
-		_text->SetLocaiton(window_x, window_y);
+		_text->SetLocation(window_x, window_y);
 		_text->SetSize(window_width, window_height);
 		_text->ReSetLayout();
 	}
@@ -280,14 +280,14 @@ void UI_CheckBox::SetLocation(int x, int y) {
 	if (!list_image.empty()) {
 		for (auto& _image : list_image) {
 			if (_image) {
-				_image->SetLocaiton(x, y);
+				_image->SetLocation(x, y);
 			}
 		}
 	}
 
 	// ÎÄ±¾
 	if (_text) {
-		_text->SetLocaiton(x, y);
+		_text->SetLocation(x, y);
 	}
 }
 

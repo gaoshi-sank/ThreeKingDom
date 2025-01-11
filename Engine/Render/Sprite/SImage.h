@@ -30,7 +30,7 @@ public:
 	virtual void Draw();
 
 	// 设置绘制位置
-	virtual void SetLocaiton(int x, int y);
+	virtual void SetLocation(int x, int y);
 
 	// 设置绘制大小
 	virtual void SetSize(int w, int h);
@@ -43,6 +43,15 @@ public:
 
 	// 获取图像大小
 	virtual bool GetImageSize(int& width, int& height);
+
+	// 获取绘制位置
+	virtual void GetLocation(int& x, int& y);
+
+	// 获取绘制大小
+	virtual void GetSize(int& w, int& h);
+
+	// 获取旋转
+	virtual void GetRotate(float& angle);
 };
 
 #endif // !_SImage_h_
