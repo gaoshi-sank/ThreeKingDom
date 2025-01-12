@@ -2,13 +2,13 @@
 #define _Scene_Test_h_
 
 
-#include "../Engine/Scene/SceneManager.h"
-#include "Unit.h"
+#include "../../Engine/Scene/SceneManager.h"
+#include "../Units/Object_Army.h"
+#include "../Units/Object_Build.h"
 
 class Scene_Test : public Scene_Base {
 private:
-	std::shared_ptr<Blut> test;
-	std::vector<std::shared_ptr<Unit>> unitsList;
+	std::vector<std::shared_ptr<Object_Base>> Object_List;
 
 public:
 	// ππ‘Ï
