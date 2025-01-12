@@ -71,7 +71,7 @@ void EngineProvider::BuildEngineStruct() {
 
 	// 构建Win32系统
 	WindowFactory::SethInstance(engine_hInstance);
-	this->mainWindow = WindowFactory::Build(250, 80, 640, 480);
+	this->mainWindow = WindowFactory::Build(); //  (250, 80, 640, 480);
 
 	// 构建控制系统
 	InputFactory::InitInput(InputFactory::InputType_DirectInput8, engine_hInstance, mainWindow->GetHandle());
