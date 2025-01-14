@@ -21,7 +21,15 @@ BufferNode::BufferNode(int other_len) : BufferNode() {
 
 // 析构
 BufferNode::~BufferNode() {
+	if (_data) {
+		delete _data;
+		_data = nullptr;
+	}
 
+	if (_next) {
+		delete _next;
+		_next = nullptr;
+	}
 }
 
 // 释放
@@ -60,7 +68,10 @@ MemPool::MemPool(int count, int bufferLen) : MemPool() {
 
 // 析构
 MemPool::~MemPool() {
-
+	if (_head) {
+		delete _head;
+		_head = nullptr;
+	}
 }
 
 // 释放

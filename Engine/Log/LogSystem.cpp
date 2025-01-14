@@ -62,7 +62,7 @@ void LogI(std::string tag, const char* format, ...) {
 			auto timestamp = getCurrentTimestampString();
 
 			// 拼接
-			auto newlen = snprintf(nullptr, 0, "%s %s %s", timestamp.c_str(), tag.c_str(), buffer);
+			auto newlen = snprintf(nullptr, 0, "%s %s %s", timestamp.c_str(), tag.c_str(), buffer) + 1;
 			if (newlen > 0) {
 				char* newBuffer = logPool->GetBuffer<char>(newlen);
 				memset(newBuffer, '\0', sizeof(char) * newlen);
@@ -166,7 +166,7 @@ void LogSystem::ThreadLoop() {
 			do{
 				auto buffer = bufferList.front();	// 获取
 				if (buffer) {
-					fprintf(fp, "%s", buffer);		// 写入文件
+					fprintf(fp, "%s\n", buffer);	// 写入文件
 					logPool->ReleaseBuffer(buffer);	// 释放内存
 					bufferList.pop();				// 弹出列表
 				}
