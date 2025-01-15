@@ -1,5 +1,6 @@
 #include "DataProvider.h"
 #include "../../Engine/FileControl/FileControl.h"
+#include "../../Engine/Log/LogSystem.h"
 
 // 静态值
 DataProvider* DataProvider::g_data = nullptr;
@@ -60,11 +61,15 @@ void DataProvider::Release() {
 
 // 初始化
 void DataProvider::InitData() {
+	LogI("DataProvider::InitData +");
+
 	// 初始化单位资源路径
 	InitUnitResourcePath();
 
 	// 初始化建筑资源路径
 	InitBuildResourcePath();
+
+	LogI("DataProvider::InitData -");
 }
 
 // 获取单位资源路径
