@@ -8,13 +8,12 @@
 #include <sstream>
 
 // 静态值
-static LogSystem* g_log = nullptr;
+static std::shared_ptr<LogSystem> g_log = std::make_shared<LogSystem>();
 static std::string debugConfig = "debugConfig.txt";		// debug配置
 static std::string logFile = "logFile.txt";				// log输出文件
 
 // log系统的内存池
 static std::shared_ptr<MemPool> logPool = std::make_shared<MemPool>(32, 128);	
-
 
 // 获取时间戳
 static std::string getCurrentTimestampString() {
@@ -46,7 +45,7 @@ static std::string getCurrentTimestampString() {
 }
 
 // 写入log
-void LogI(std::string tag, const char* format, ...) {
+void LogI(const char* format, ...) {
 	if (logPool) {
 		va_list args;
 		va_start(args, format);
@@ -62,14 +61,14 @@ void LogI(std::string tag, const char* format, ...) {
 			auto timestamp = getCurrentTimestampString();
 
 			// 拼接
-			auto newlen = snprintf(nullptr, 0, "%s %s %s", timestamp.c_str(), tag.c_str(), buffer) + 1;
+			auto newlen = snprintf(nullptr, 0, "%s info %s", timestamp.c_str(), buffer) + 1;
 			if (newlen > 0) {
 				char* newBuffer = logPool->GetBuffer<char>(newlen);
 				memset(newBuffer, '\0', sizeof(char) * newlen);
 
 				// 加入log系统
 				if (g_log) {
-					snprintf(newBuffer, newlen, "%s %s %s", timestamp.c_str(), tag.c_str(), buffer);
+					snprintf(newBuffer, newlen, "%s info %s", timestamp.c_str(), buffer);
 					g_log->Enque(newBuffer, newlen);
 				}
 
@@ -89,29 +88,33 @@ LogSystem::LogSystem() {
 	// 线程
 	mainStatus = 1;
 	mainThread = new std::thread(&LogSystem::ThreadLoop, this);
-
+	mainThread->detach();
 }
 
 // 析构
 LogSystem::~LogSystem() {
+	// 等待线程结束
+	WaittingThread();
 
-}
+	// 删除对象
+	if (mainThread) {
+		delete mainThread;
+		mainThread = nullptr;
+	}
 
-
-// 初始化log系统
-void LogSystem::InitLogSystem() {
-	if (!g_log) {
-		g_log = new LogSystem();
+	// 清空剩余buffer
+	if (!bufferList.empty()) {
+		do {
+			auto buffer = bufferList.front();	// 获取
+			logPool->ReleaseBuffer(buffer);		// 释放内存
+			bufferList.pop();					// 弹出列表
+		} while (!bufferList.empty());
 	}
 }
 
-// 停止log系统
-void LogSystem::StopLogSystem() {
-	if (g_log) {
-		g_log->WaittingThread();
-		delete g_log;
-		g_log = nullptr;
-	}
+// 获取句柄
+std::shared_ptr<LogSystem> LogSystem::GetInstance() {
+	return g_log;
 }
 
 // 读取Log开关配置
