@@ -3,8 +3,11 @@
 
 
 #include "../../Engine/Scene/SceneManager.h"
+#include "../../Engine/Log/LogSystem.h"
 #include "../Units/Object_Army.h"
 #include "../Units/Object_Build.h"
+#include "../Units/Object_Hero.h"
+
 
 class Scene_Test : public Scene_Base {
 private:
