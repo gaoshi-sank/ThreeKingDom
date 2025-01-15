@@ -31,8 +31,6 @@ public:
 
 	// »æÖÆ
 	void Draw();
-
-
 };
 
 

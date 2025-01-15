@@ -1,6 +1,8 @@
 #ifndef _Object_Base_h_
 #define _Object_Base_h_
 
+#include "Image/Image_Base.h"
+
 class Object_Base {
 public:
 	unsigned int object_id;

@@ -1,7 +1,7 @@
 #ifndef _Image_Army_h_
 #define _Image_Army_h_
 
-#include "../../../Engine/Render/Sprite/Animation.h"
+
 #include "Image_Base.h"
 
 class Image_Army : public Image_Base {

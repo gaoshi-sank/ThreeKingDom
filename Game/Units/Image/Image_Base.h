@@ -2,7 +2,8 @@
 #define _Image_Base_h_
 
 #include "../../Datas/DataProvider.h"
-
+#include "../../../Engine/Render/Sprite/Animation.h"
+#include "../../../Engine/Render/Sprite/SImage.h"
 
 class Image_Base {
 public:

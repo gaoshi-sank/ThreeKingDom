@@ -1,7 +1,6 @@
 #ifndef _Image_Build_h_
 #define _Image_Build_h_
 
-#include "../../../Engine/Render/Sprite/Animation.h"
 #include "Image_Base.h"
 
 class Image_Build : public Image_Base {
