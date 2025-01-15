@@ -13,6 +13,7 @@ Input_DirectInput8::Input_DirectInput8() {
     g_DirectInput = nullptr;
     g_keyboard = nullptr;
     g_mouseboard = nullptr;
+    g_hWnd = nullptr;
 }
 
 // 析构
@@ -27,7 +28,7 @@ bool Input_DirectInput8::BuildInput(HINSTANCE hinstance, HWND hWnd) {
     // DISCL_FOREGROUND         当前窗口有焦点是可以取得鼠标状态
     // DISCL_BACKGROUND         即使没有焦点
     // DISCL_NOWINKEY           禁用键盘Win键
-
+    g_hWnd = hWnd;
 
     // 创建DirectInput设备
     HRESULT hr = DirectInput8Create(hinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&g_DirectInput, nullptr);
@@ -120,7 +121,7 @@ bool Input_DirectInput8::GetMouseState(int key) {
     HRESULT hr;
     DIMOUSESTATE mouseboardState = { 0 };
 
-    // 读取键盘状态 
+    // 获取鼠标状态 
     if (g_mouseboard) {
         hr = g_mouseboard->GetDeviceState(sizeof(mouseboardState), (LPVOID)&mouseboardState);
         if (FAILED(hr)) {
@@ -136,6 +137,45 @@ bool Input_DirectInput8::GetMouseState(int key) {
             return true;
         }
     }
+
+    return false;
+}
+
+// 获取光标位置
+bool Input_DirectInput8::GetMousePos(int& x, int& y) {
+    // win32API
+   
+    POINT pos;
+    bool ret;
+
+    ret = GetCursorPos(&pos) != 0;
+    ret &= ScreenToClient(g_hWnd, &pos) != 0;
+    if (ret) {
+        x = (int)pos.x;
+        y = (int)pos.y;
+        return ret;
+    }
+    
+    /*
+    HRESULT hr;
+    DIMOUSESTATE mouseboardState = { 0 };
+
+    // 获取鼠标状态 
+    if (g_mouseboard) {
+        hr = g_mouseboard->GetDeviceState(sizeof(mouseboardState), (LPVOID)&mouseboardState);
+        if (FAILED(hr)) {
+            if (hr == DIERR_INPUTLOST || hr == DIERR_NOTACQUIRED) {
+                hr = g_keyboard->Acquire();
+                if (FAILED(hr)) {
+                    return false;
+                }
+            }
+        }
+
+        x = (int)mouseboardState.lX;
+        y = (int)mouseboardState.lY;
+        return true;
+    }*/
 
     return false;
 }

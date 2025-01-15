@@ -75,16 +75,16 @@ MemPool::~MemPool() {
 }
 
 // ÊÍ·Å
-void MemPool::ReleaseBuffer(void* releasenode) {
-	if (releasenode) {
-		auto head = this->_head;
-		while (head) {
-			if (releasenode == head) {
-				head->isUsing = false;
-				head->ReleaseBuffer();
+void MemPool::ReleaseBuffer(void* release_node) {
+	if (release_node) {
+		auto compare_node = this->_head;
+		while (compare_node) {
+			if (release_node == compare_node) {
+				compare_node->isUsing = false;
+				compare_node->ReleaseBuffer();
 				break;
 			}
-			head = head->_next;
+			compare_node = compare_node->_next;
 		}
 	}
 }

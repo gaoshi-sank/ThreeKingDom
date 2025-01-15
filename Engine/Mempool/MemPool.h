@@ -62,24 +62,24 @@ public:
 
 		// 遍历查看是否有空闲节点
 		bool isfound = false;
-		auto head = this->_head;
-		while (head) {
-			if (head->len >= len && !head->isUsing) {
+		auto found_node = this->_head;
+		while (found_node) {
+			if (found_node->len >= len && !found_node->isUsing) {
 				isfound = true;
 				break;
 			}
-			head = head->_next;
+			found_node = found_node->_next;
 		}
 
 		// 有
 		if (isfound) {
-			head->isUsing = true;
-			return (T*)(head->_data);
+			found_node->isUsing = true;
+			return (T*)(found_node->_data);
 		}
 		// 无 - 重新new一个
 		else {
 			auto nexthead = this->_head;
-			while (nexthead->_next) nexthead = nexthead->_next;
+			while (nexthead && nexthead->_next) nexthead = nexthead->_next;
 			auto newnode = new BufferNode(len);
 			if (newnode) {
 				newnode->isUsing = true;
@@ -92,7 +92,7 @@ public:
 	}
 
 	// 释放
-	void ReleaseBuffer(void* head);
+	void ReleaseBuffer(void* release_node);
 
 };
 
