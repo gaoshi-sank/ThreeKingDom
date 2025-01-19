@@ -4,6 +4,7 @@
 
 #include "../../Engine/Scene/SceneManager.h"
 #include "../../Engine/Log/LogSystem.h"
+#include "../../Engine/Input/InputFactory.h"
 #include "../Units/Object_Army.h"
 #include "../Units/Object_Build.h"
 #include "../Units/Object_Hero.h"
@@ -12,6 +13,7 @@
 class Scene_Test : public Scene_Base {
 private:
 	std::vector<std::shared_ptr<Object_Base>> Object_List;
+
 
 public:
 	// ππ‘Ï
@@ -34,6 +36,7 @@ public:
 
 	// Õ£÷π
 	virtual void Stop();
+
 };
 
 
