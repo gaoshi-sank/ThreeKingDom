@@ -11,6 +11,7 @@
 #include "Render/Sprite/SSprite.h"
 #include "FIleControl/FileControl.h"
 #include "Log/LogSystem.h"
+#include "Collision/Collision.h"
 
 // 引擎管理类
 class EngineProvider {

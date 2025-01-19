@@ -9,6 +9,7 @@ class Scene_Base {
 public:
 	unsigned int scene_id;
 	bool isPrerelease;
+	std::function<void(int*)> callback_handle;
 
 public:
 	// 构造
@@ -31,6 +32,9 @@ public:
 
 	// 停止
 	virtual void Stop() = 0;
+
+	// 回调函数
+	virtual void Callback(std::function<void(int*)> _callback);
 };
 
 #endif // !_Scene_Base_h_

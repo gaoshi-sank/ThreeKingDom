@@ -19,3 +19,9 @@ Scene_Base::~Scene_Base() {
 void Scene_Base::Stop() {
 	isPrerelease = true;
 }
+
+
+// »Øµ÷º¯Êý
+void Scene_Base::Callback(std::function<void(int*)> _callback) {
+	this->callback_handle = _callback;
+}
