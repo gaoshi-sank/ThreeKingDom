@@ -2,6 +2,7 @@
 
 // ππ‘Ï
 Scene_Test::Scene_Test() {
+	scene_type = SceneType_Test;
 
 }
 

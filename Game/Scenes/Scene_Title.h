@@ -1,20 +1,19 @@
-#ifndef _Scene_Test_h_
-#define _Scene_Test_h_
+#ifndef _Scene_Title_h_
+#define _Scene_Title_h_
 
 
 #include "SceneInclude.h"
 
-class Scene_Test : public Scene_Base {
+class Scene_Title : public Scene_Base {
 private:
-	std::vector<std::shared_ptr<Object_Base>> Object_List;
-
+	std::shared_ptr<SText> _object;
 
 public:
 	// 构造
-	Scene_Test();
+	Scene_Title();
 
 	// 析构
-	~Scene_Test();
+	~Scene_Title();
 
 	// 初始化
 	virtual void Init();
@@ -34,4 +33,4 @@ public:
 };
 
 
-#endif // !_Scene_Test_h_
+#endif // !_Scene_Title_h_
