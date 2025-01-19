@@ -4,6 +4,7 @@
 #include "../../Datas/DataProvider.h"
 #include "../../../Engine/Render/Sprite/Animation.h"
 #include "../../../Engine/Render/Sprite/SImage.h"
+#include "../../../Engine/Render/Sprite/SText.h"
 #include "../../../Engine/Collision/Collision.h"
 
 class Image_Base {
