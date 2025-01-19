@@ -44,7 +44,11 @@ void GameManager::InitGameManager(HINSTANCE hinstance) {
     }
 
     // 增加初始场景
-    SceneManager::AddScene(new Scene_Test());
+    auto first_scene = new Scene_Title();
+    if (first_scene) {
+        SceneManager::AddScene(first_scene);
+        LogI("Add A Scene for Scene_Title");
+    }
 
 
     LogI("GameManager InitGameManager -");
@@ -64,4 +68,35 @@ void GameManager::RunGameManager() {
 // 获取游戏状态实例
 std::shared_ptr<GameState> GameManager::GetGameState() {
     return m_gameState;
+}
+
+// 场景事件处理
+// 场景ID，场景事件，事件参数1,2,3
+void GameManager::EventControl_Scene(int* param) {
+    if (param) {
+        int len = param[0];
+        if (len >= 3) {
+            unsigned int trigger_Id = (unsigned int)param[1];
+            int eventType = param[2];
+            int sceneType = param[3];
+
+            // 切换场景
+            if (eventType == SceneEventType_ChangScene) {
+                // 当前场景为 "标题场景"
+                if (sceneType == SceneType_Title) {
+                    // 唯一消息 - 切换下一个场景
+                    auto nextScene = new Scene_Card();
+                    if (nextScene) {
+                        // 初始化游戏对局状态
+                        m_gameState = std::make_shared<GameState>();
+
+                        // 切换场景
+                        auto next_id = nextScene->scene_id;
+                        SceneManager::AddScene(nextScene);
+                        SceneManager::SwitchScene(next_id);
+                    }
+                }
+            }
+        }
+    }
 }

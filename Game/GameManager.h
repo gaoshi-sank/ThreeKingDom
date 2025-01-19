@@ -8,10 +8,11 @@
 
 #include <Windows.h>
 #include "../Engine/EngineProvider.h"
-#include "Scenes/Scene_Test.h"
 #include "Datas/DataProvider.h"
 #include "GameState.h"				// 游戏状态
-
+#include "Scenes/Scene_Test.h"		// 测试场景
+#include "Scenes/Scene_Title.h"		// 标题场景
+#include "Scenes/Scene_Card.h"		// 游戏场景
 
 // 游戏管理类
 class GameManager {
@@ -40,6 +41,10 @@ public:
 
 	// 获取游戏状态实例
 	std::shared_ptr<GameState> GetGameState();
+
+	// 场景事件处理
+	// 场景ID，场景事件，事件参数1,2,3
+	void EventControl_Scene(int* param);
 
 };
 
