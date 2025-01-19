@@ -4,6 +4,7 @@
 // 游戏状态类
 class GameState {
 public:
+	int cardState;
 
 public:
 	// 构造
