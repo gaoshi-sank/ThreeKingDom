@@ -7,6 +7,8 @@
 class Object_Hero : public Object_Base {
 private:
 	std::shared_ptr<SImage> _test;
+	bool InRect;
+	int inhand_state;
 
 public:
 	// 构造
@@ -20,6 +22,12 @@ public:
 
 	// 创建部队
 	void CreateHero(int x, int y);
+
+	// 检查事件
+	void CheckPoint(int x, int y);
+
+	void CheckDown();
+	void CheckUp();
 
 	// 更新
 	void Update();
