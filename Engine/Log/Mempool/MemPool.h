@@ -4,7 +4,8 @@
 #ifndef _MemPool_h_
 #define _MemPool_h_
 
-#include "string.h"
+#include <string.h>
+#include <mutex>
 
 // 内存节点
 class BufferNode {
@@ -40,6 +41,7 @@ public:
 class MemPool {
 private:
 	BufferNode* _head;
+	std::mutex lock;
 
 public:
 	// 构造
@@ -78,16 +80,27 @@ public:
 		}
 		// 无 - 重新new一个
 		else {
+			std::lock_guard<std::mutex> lc(lock);
 			auto nexthead = this->_head;
-			while (nexthead && nexthead->_next) nexthead = nexthead->_next;
-			auto newnode = new BufferNode(len);
-			if (newnode) {
-				newnode->isUsing = true;
-				nexthead->_next = newnode;
-				return (T*)(newnode->_data);
+			while (nexthead) {
+				if (nexthead->_next) {
+					nexthead = nexthead->_next;
+				}
+				else {
+					break;
+				}
 			}
-		}
 
+			if (nexthead) {
+				auto newnode = new BufferNode(len);
+				if (newnode) {
+					newnode->isUsing = true;
+					nexthead->_next = newnode;
+					return (T*)(newnode->_data);
+				}
+			}
+			
+		}
 		return nullptr;
 	}
 

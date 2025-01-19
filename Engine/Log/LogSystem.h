@@ -2,7 +2,7 @@
 #define _LogSystem_h_
 
 #include "../EngineConfig.h"
-#include "../Mempool/MemPool.h"
+#include "Mempool/MemPool.h"
 
 // log类
 class LogSystem {
@@ -15,10 +15,12 @@ private:
 	std::map<std::string, int> TagMapping;	// tag映射
 	std::queue<char*> bufferList;			// 写入buffer队列
 	std::mutex lock_buffer;					// 锁 - buffer队列
+	int open_logsystem;						// 开启值
 
 public:
 	// 构造
-	LogSystem();
+	// 选择是否开启
+	LogSystem(bool Open = true);
 
 	// 析构
 	~LogSystem();

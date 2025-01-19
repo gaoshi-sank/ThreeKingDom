@@ -8,7 +8,7 @@
 #include <sstream>
 
 // 静态值
-static std::shared_ptr<LogSystem> g_log = std::make_shared<LogSystem>();
+static std::shared_ptr<LogSystem> g_log = std::make_shared<LogSystem>(1);
 static std::string debugConfig = "debugConfig.txt";		// debug配置
 static std::string logFile = "logFile.txt";				// log输出文件
 
@@ -84,17 +84,26 @@ void LogI(const char* format, ...) {
 }
 
 // 构造
-LogSystem::LogSystem() {
+LogSystem::LogSystem(bool Open) {
+	// 初始值
+	open_logsystem = Open;
+	mainStatus = 0;
+	mainThread = nullptr;
+
 	// 线程
-	mainStatus = 1;
-	mainThread = new std::thread(&LogSystem::ThreadLoop, this);
-	mainThread->detach();
+	if (open_logsystem) {
+		mainStatus = 1;
+		mainThread = new std::thread(&LogSystem::ThreadLoop, this);
+		mainThread->detach();
+	}
 }
 
 // 析构
 LogSystem::~LogSystem() {
 	// 等待线程结束
-	WaittingThread();
+	if (open_logsystem) {
+		WaittingThread();
+	}
 
 	// 删除对象
 	if (mainThread) {
@@ -137,11 +146,14 @@ void LogSystem::ReadLogSwitch() {
 		}
 		fclose(fp);
 	}
-	
 }
 
 // enque
 void LogSystem::Enque(char* buffer, int len) {
+	if (!open_logsystem) {
+		return;
+	}
+
 	if (len > 0) {
 		char* _data = logPool->GetBuffer<char>(len);
 		if (_data) {
@@ -158,6 +170,10 @@ void LogSystem::Enque(char* buffer, int len) {
 
 // 独立线程处理
 void LogSystem::ThreadLoop() {
+	if (!open_logsystem) {
+		return;
+	}
+
 	// 生成文件
 	FILE* fp = fopen(logFile.c_str(), "w");
 
@@ -197,7 +213,8 @@ void LogSystem::WaittingThread() {
 		mainStatus = 0;
 		std::unique_lock<std::mutex> lock(lock_main);
 		cv_main.wait(lock, [&]() {
-			return mainStatus == 2;
+			// 正常状态结束，没有开启log系统
+			return (mainStatus == 2 || !open_logsystem);
 		});
 	}
 }

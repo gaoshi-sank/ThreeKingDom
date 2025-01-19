@@ -36,6 +36,7 @@ BufferNode::~BufferNode() {
 // 重新置0
 void BufferNode::ReleaseBuffer() {
 	if (this->_data) {
+		this->isUsing = false;
 		memset(this->_data, '\0', sizeof(unsigned char) * len);
 	}
 }
@@ -48,7 +49,7 @@ MemPool::MemPool() {
 // 构造 - 参数1
 MemPool::MemPool(int count, int bufferLen) : MemPool() {
 	count = (count <= 0) ? 10 : count;
-	bufferLen = (bufferLen <= 0) ? 128 : count;
+	bufferLen = (bufferLen <= 0) ? 128 : bufferLen;
 	
 	_head = new BufferNode(bufferLen);
 	if (_head) {
@@ -75,12 +76,12 @@ MemPool::~MemPool() {
 }
 
 // 释放
-void MemPool::ReleaseBuffer(void* release_node) {
-	if (release_node) {
+void MemPool::ReleaseBuffer(void* release_data) {
+	if (release_data) {
+		std::lock_guard<std::mutex> lc(lock);
 		auto compare_node = this->_head;
 		while (compare_node) {
-			if (release_node == compare_node) {
-				compare_node->isUsing = false;
+			if (compare_node->_data == release_data) {
 				compare_node->ReleaseBuffer();
 				break;
 			}

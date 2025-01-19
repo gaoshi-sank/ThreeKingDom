@@ -6,8 +6,8 @@ static unsigned int id = 0x00;
 // 构造
 Scene_Base::Scene_Base() {
 	scene_id = ++id;		// 编号
+	scene_type = 0x00;		// 场景类型
 	isPrerelease = false;	// 预释放
-
 }
 
 // 析构

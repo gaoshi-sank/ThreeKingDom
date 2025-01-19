@@ -8,6 +8,7 @@
 class Scene_Base {
 public:
 	unsigned int scene_id;
+	int scene_type;
 	bool isPrerelease;
 	std::function<void(int*)> callback_handle;
 
