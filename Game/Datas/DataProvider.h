@@ -15,7 +15,7 @@ struct ResStruct {
 	ResStruct& operator=(const ResStruct& other);
 };
 
-// 
+// 数据提供类
 class DataProvider {
 private:
 	// 构造

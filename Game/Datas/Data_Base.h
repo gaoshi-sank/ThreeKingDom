@@ -3,6 +3,8 @@
 
 class Data_Base {
 public:
+	unsigned int dataId;
+
 	Data_Base();
 
 	~Data_Base();
