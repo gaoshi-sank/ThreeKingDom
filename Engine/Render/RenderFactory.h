@@ -11,6 +11,7 @@ public:
 	// 渲染器类型
 	enum RenderType {
 		RenderType_Direct2D = 1,	// Direct2D
+		RenderType_Sfml,			// SFML - 三方库
 	};
 
 private:
@@ -48,6 +49,9 @@ public:
 private:
 	// 初始化Diect2D类型渲染器
 	void InitRender_Direct2D();
+
+	// 初始化Sfml类型渲染器
+	void InitRender_SFML();
 
 };
 

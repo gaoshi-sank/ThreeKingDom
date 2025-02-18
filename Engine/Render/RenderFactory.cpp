@@ -53,6 +53,12 @@ void RenderFactory::InitRender(int renderType, ...) {
 			factory_render->InitRender_Direct2D();
 		}
 			break;
+		case RenderType_Sfml:
+		{
+			// 初始化
+			factory_render->InitRender_SFML();
+		}
+			break;
 		default:
 			break;
 		}
@@ -92,5 +98,12 @@ void RenderFactory::InitRender_Direct2D() {
 				
 			}
 		}
+	}
+}
+
+// 初始化Sfml类型渲染器
+void RenderFactory::InitRender_SFML() {
+	if (!g_render) {
+		
 	}
 }

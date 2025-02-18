@@ -26,21 +26,28 @@ EngineProvider* EngineProvider::GetInstance() {
 	return g_eng;
 }
 
-// 初始化
-void EngineProvider::InitEngine() {
-	if (!g_eng) {
-		g_eng = new EngineProvider();
-	}
-	g_eng->BuildEngineStruct();
-}
-
 // 初始化引擎
-void EngineProvider::InitEngine(HINSTANCE _hinst) {
+void EngineProvider::InitEngine(HINSTANCE _hinst, int renderType, bool isFull, int width, int height) {
 	if (!g_eng) {
 		g_eng = new EngineProvider();
 	}
+	
+	auto x = 0;
+	auto y = 0;
+	auto win32_width = 0;
+	auto win32_height = 0;
+	if (isFull) {
+		win32_width = GetSystemMetrics(SM_CXSCREEN);
+		win32_height = GetSystemMetrics(SM_CYSCREEN);
+	}
+	else {
+		x = (win32_width - width) / 2;
+		y = (win32_height - height) / 2;
+	}
+
 	g_eng->engine_hInstance = _hinst;
-	g_eng->BuildEngineStruct();
+	g_eng->setting_render = renderType;
+	g_eng->BuildEngineStruct(x, y, win32_width, win32_height, isFull);
 }
 
 // 运行引擎
@@ -51,13 +58,10 @@ void EngineProvider::RunEngine() {
 }
 
 // 构建引擎
-void EngineProvider::BuildEngineStruct() {
+void EngineProvider::BuildEngineStruct(int x, int y, int width, int height, bool isFull) {
 	if (buildEngine_state == 1) {
 		return;
 	}
-
-	// 读取引擎配置文件
-	ReadConfig();
 
 	// 构建文件处理系统
 	FileControl::InitFileControl();
@@ -68,13 +72,19 @@ void EngineProvider::BuildEngineStruct() {
 
 	// 构建Win32系统
 	WindowFactory::SethInstance(engine_hInstance);
-	this->mainWindow = WindowFactory::Build(250, 80, 640, 480);
+	if (isFull) {
+		this->mainWindow = WindowFactory::Build();
+	}
+	else {
+		this->mainWindow = WindowFactory::Build(x, y, width, height);
+	}
+
 
 	// 构建控制系统
 	InputFactory::InitInput(InputFactory::InputType_DirectInput8, engine_hInstance, mainWindow->GetHandle());
 
 	// 构建渲染系统
-	RenderFactory::InitRender(RenderFactory::RenderType_Direct2D, mainWindow->GetHandle(), 640, 480);
+	RenderFactory::InitRender(setting_render, mainWindow->GetHandle(), width, height);
 
 	// 构建UI系统
 	UIFactory::InitUIProvider();
