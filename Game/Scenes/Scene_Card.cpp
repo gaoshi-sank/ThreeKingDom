@@ -47,7 +47,6 @@ void Scene_Card::Update() {
 		// 初始化状态
 		else if (gamestate->cardState == 1) {
 
-
 			gamestate->cardState = 2;
 		}
 		// 游戏循环状态
