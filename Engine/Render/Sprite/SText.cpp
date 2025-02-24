@@ -58,12 +58,31 @@ void SText::Update() {
 
 }
 
-// 绘制图像
+// 绘制文本
 void SText::Draw() {
 	if (render_text && visiable) {
 		auto render = RenderFactory::GetInstance()->GetRender();
 		if (render) {
 			render->RenderText(render_text, draw_x, draw_y, draw_width, draw_height, text_layout, text_brash);
+		}
+	}
+}
+
+// 绘制文本
+void SText::Draw(const std::string& draw_text, int other_x, int other_y, int other_width, int other_height) {
+	if (!draw_text.empty() && visiable) {
+		auto render = RenderFactory::GetInstance()->GetRender();
+		if (render) {
+			// 切换格式
+			size_t loopnum = draw_text.size() / limit_length;
+			auto other_text = new wchar_t[limit_length * (loopnum + 1)];
+			if (other_text) {
+				memset(other_text, '\0', sizeof(wchar_t) * (limit_length * (loopnum + 1)));
+				CharToWChar(draw_text.c_str(), other_text);
+
+				// 渲染
+				render->RenderText(other_text, other_x, other_y, other_width, other_height, text_layout, text_brash);
+			}
 		}
 	}
 }

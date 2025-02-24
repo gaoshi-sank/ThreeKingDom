@@ -38,6 +38,7 @@ public:
 		UIStyle_Contain,
 		UIStyle_CheckBox,
 		UIStyle_Plane,
+		UIStyle_Excel,
 	};
 
 	// UIÏûÏ¢

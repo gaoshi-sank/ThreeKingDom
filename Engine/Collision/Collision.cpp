@@ -53,3 +53,20 @@ int CheckRect(int red_left, int red_top, int red_right, int red_bottom, int blue
 	}
 	return 0;
 }
+
+
+
+Collision::Collision() {
+	box_x = 0.0f;
+	box_y = 0.0f;
+	box_width = 0.0f;
+	box_height = 0.0f;
+	default_center = CenterType_LT;
+	speed_x = speed_y = 0.0f;
+	V = 0.0f;
+	G = 0.0f;
+}
+
+Collision::~Collision() {
+
+}

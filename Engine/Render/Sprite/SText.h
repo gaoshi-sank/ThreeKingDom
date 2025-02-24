@@ -33,8 +33,11 @@ public:
 	// 更新
 	virtual void Update();
 
-	// 绘制图像
+	// 绘制文本
 	virtual void Draw();
+
+	// 绘制文本
+	virtual void Draw(const std::string& render_text, int dx, int dy, int dw, int dh);
 
 	// 设置绘制位置
 	virtual void SetLocation(int x, int y);
