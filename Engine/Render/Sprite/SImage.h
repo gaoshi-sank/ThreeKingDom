@@ -29,6 +29,9 @@ public:
 	// 绘制图像
 	virtual void Draw();
 
+	// 绘制图像 - 外部提供图像资源
+	virtual void Draw(void* _image);
+
 	// 设置绘制位置
 	virtual void SetLocation(int x, int y);
 
@@ -40,6 +43,9 @@ public:
 
 	// 设置裁剪
 	virtual void SetCrop(int x, int y, int width, int height);
+
+	// 获取图像
+	virtual void* GetImage();
 
 	// 获取图像大小
 	virtual bool GetImageSize(int& width, int& height);

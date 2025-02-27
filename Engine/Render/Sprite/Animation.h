@@ -8,6 +8,7 @@
 class Animation : public Sprite {
 private:
 	std::vector<SImage*> ListSprite;
+	bool sameSprite;
 	int showIndex;
 	Timer* _timer;
 
@@ -19,7 +20,10 @@ public:
 	virtual ~Animation();
 
 	// 创建
-	void AddSprite(const char* filename, int x, int y, int width, int height, int cropx, int cropy, int cropwidth, int cropheight);
+	void CreateByMul(const char* filename, int x, int y, int width, int height, int cropx = 0, int cropy = 0, int cropwidth = 0, int cropheight = 0);
+
+	// 创建
+	void CreateByOne(const char* filename, int x, int y, int width, int height, int cropwidth, int cropheight);
 
 	// 创建
 	void AddSprite(SImage* _newsprite);

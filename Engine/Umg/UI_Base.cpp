@@ -64,3 +64,8 @@ void UI_Base::CheckEvent(unsigned int* param) {
 		}
 	}
 }
+
+// »ñÈ¡×´Ì¬
+bool UI_Base::GetStateOfHover() {
+	return window_inrect;
+}

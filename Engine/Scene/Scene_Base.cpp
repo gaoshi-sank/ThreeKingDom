@@ -23,5 +23,5 @@ void Scene_Base::Stop() {
 
 // »Øµ÷º¯Êý
 void Scene_Base::Callback(std::function<void(int*)> _callback) {
-	this->callback_handle = _callback;
+	this->trigger_scene = _callback;
 }

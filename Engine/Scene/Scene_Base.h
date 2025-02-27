@@ -10,7 +10,7 @@ public:
 	unsigned int scene_id;
 	int scene_type;
 	bool isPrerelease;
-	std::function<void(int*)> callback_handle;
+	std::function<void(int*)> trigger_scene;
 
 public:
 	// ππ‘Ï

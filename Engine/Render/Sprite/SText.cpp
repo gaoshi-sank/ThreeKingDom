@@ -1,5 +1,5 @@
 #include "SText.h"
-#include "SpriteHelper.h"
+#include "../../EngineHelper.h"
 #include "../RenderFactory.h"
 #include "../Direct2D/Render_Direct2d.h"
 

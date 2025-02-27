@@ -39,6 +39,7 @@ public:
 		UIStyle_CheckBox,
 		UIStyle_Plane,
 		UIStyle_Excel,
+		UIStyle_Gif,
 	};
 
 	// UI消息
@@ -80,6 +81,10 @@ public:
 
 	// 设置可见性
 	virtual void SetVisiable(bool visible = false) = 0;
+
+	// 获取状态
+	virtual bool GetStateOfHover();
+
 };
 
 

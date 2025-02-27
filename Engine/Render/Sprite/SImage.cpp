@@ -1,5 +1,5 @@
 #include "SImage.h"
-#include "SpriteHelper.h"
+#include "../../EngineHelper.h"
 #include "../RenderFactory.h"
 #include "../Direct2D/Render_Direct2d.h"
 
@@ -13,7 +13,6 @@ SImage::SImage() {
 	opacity = 1.0f;
 	angle = 0.0f;
 	src_x = src_y = src_width = src_height = 0;
-
 }
 
 // 构造
@@ -54,6 +53,16 @@ void SImage::Draw() {
 	}
 }
 
+// 绘制图像 - 外部提供图像资源
+void SImage::Draw(void* other_image) {
+	if (other_image) {
+		auto render = RenderFactory::GetInstance()->GetRender();
+		if (render) {
+			render->RenderImage(other_image, draw_x, draw_y, draw_width, draw_height, src_x, src_y, src_width, src_height, opacity, angle);
+		}
+	}
+}
+
 // 设置绘制位置
 void SImage::SetLocation(int x, int y) {
 	this->draw_x = x;
@@ -77,6 +86,11 @@ void SImage::SetCrop(int x, int y, int width, int height) {
 	this->src_y = y;
 	this->src_width = width;
 	this->src_height = height;
+}
+
+// 获取图像
+void* SImage::GetImage() {
+	return this->_image;
 }
 
 // 获取图像大小

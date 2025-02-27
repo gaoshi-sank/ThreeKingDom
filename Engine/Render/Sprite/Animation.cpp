@@ -2,6 +2,7 @@
 
 // 构造
 Animation::Animation() {
+	sameSprite = false;
 	showIndex = 0;
 	_timer = nullptr;
 
@@ -27,15 +28,58 @@ Animation::~Animation() {
 }
 
 // 创建
-void Animation::AddSprite(const char* filename, int x, int y, int width, int height, int cropx, int cropy, int cropwidth, int cropheight) {
-	if(filename) {
+void Animation::CreateByMul(const char* filename, int x, int y, int width, int height, int cropx, int cropy, int cropwidth, int cropheight) {
+	sameSprite = false;
+	if (filename) {
 		SImage* _image = new SImage(filename);
 		if (_image) {
 			_image->SetLocation(x, y);
 			_image->SetSize(width, height);
+			if (cropwidth == 0 || cropheight == 0) {
+				int imageWidth = 0, imageHeight = 0;
+				if (_image->GetImageSize(imageWidth, imageHeight)) {
+					cropx = 0;
+					cropy = 0;
+					cropwidth = imageWidth;
+					cropheight = imageHeight;
+				}
+			}
 			_image->SetCrop(cropx, cropy, cropwidth, cropheight);
+			ListSprite.push_back(_image);
 		}
-		ListSprite.push_back(_image);
+	}
+}
+
+// 创建
+void Animation::CreateByOne(const char* filename, int x, int y, int width, int height, int cropwidth, int cropheight) {
+	sameSprite = true;
+	SImage* _image = new SImage(filename);
+	int imageWidth = 0, imageHeight = 0;
+	if (_image && _image->GetImageSize(imageWidth, imageHeight)) {
+		int cols = imageWidth / cropwidth;
+		int rows = imageHeight / cropheight;
+		bool isfrist = true;
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				SImage* new_image = nullptr;
+				if (isfrist) {
+					isfrist = false;
+					new_image = _image;
+				}
+				else {
+					new_image = new SImage();
+				}
+
+				if (new_image) {
+					int crop_x = cropwidth * j;
+					int crop_y = cropheight * i;
+					new_image->SetLocation(x, y);
+					new_image->SetSize(width, height);
+					new_image->SetCrop(crop_x, crop_y, cropwidth, cropheight);
+					ListSprite.push_back(new_image);
+				}
+			}
+		}
 	}
 }
 
@@ -66,7 +110,15 @@ void Animation::Update() {
 // 绘制
 void Animation::Draw() {
 	if (showIndex >= 0 && showIndex < ListSprite.size()) {
-		ListSprite[showIndex]->Draw();
+		if (sameSprite) {
+			SImage* _image = ListSprite[0];
+			if (_image) {
+				ListSprite[showIndex]->Draw(_image->GetImage());
+			}
+		}
+		else {
+			ListSprite[showIndex]->Draw();
+		}
 	}
 }
 

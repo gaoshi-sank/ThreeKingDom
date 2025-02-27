@@ -4,8 +4,8 @@
 
 #include "../Control/UI_Lable.h"		// 标签UI
 #include "../Control/UI_Button.h"		// 按钮UI
-#include "../Control/UI_CheckBox.h"		// 按钮UI
-
+#include "../Control/UI_CheckBox.h"		// 复选框UI
+#include "../Control/UI_GIF.h"			// 动图UI
 
 // 面板类
 // 一般用于放置其他UI控件

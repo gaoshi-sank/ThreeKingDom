@@ -1,7 +1,7 @@
 #ifndef _EngineProvider_h_
 #define _EngineProvider_h_
 
-#include "EngineConfig.h"
+#include "EngineHelper.h"
 #include "Win32/WindowFactory.h"
 #include "Render/RenderFactory.h"
 #include "Input/InputFactory.h"

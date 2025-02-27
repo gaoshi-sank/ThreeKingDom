@@ -49,8 +49,6 @@ public:
 	// 普通，区域内，按下，失效
 	virtual bool Create(const std::string& out, const std::string& in, const std::string& down, const std::string& disable);
 
-	// 
-
 	// 增加静态文本
 	virtual void AddStaticText(const std::string& text);
 
