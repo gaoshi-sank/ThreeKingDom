@@ -9,15 +9,14 @@ const int limit_length = 1024;
 // 精灵类
 class Sprite {
 public:
-	bool visiable;					// 可见性					
-	int draw_x, draw_y, 
-		draw_width, draw_height;	// 绘制区
+	bool visiable;				// 可见性					
+	D2D1_RECT_F draw_rect;		// 绘制区
 
 public:
 	// 构造
 	Sprite() {
 		visiable = true;
-		draw_x = draw_y = draw_width = draw_height = 0;
+		draw_rect = D2D1::RectF();
 	}
 
 	// 析构
@@ -29,26 +28,19 @@ public:
 	virtual void Update() = 0;
 
 	// 绘制
-	// 图像、图形、线条、文本
 	virtual void Draw() = 0;
 
-	// 设置绘制位置
-	virtual void SetLocation(int x, int y) = 0;
-
-	// 设置绘制大小
-	virtual void SetSize(int w, int h) = 0;
+	// 设置绘制区域
+	virtual void SetRect(D2D1_RECT_F _rect) = 0;
 
 	// 设置旋转
 	virtual void SetRotate(float angle) = 0;
+	
+	// 获取图像
+	virtual ID2D1Bitmap* GetImage() = 0;
 
-	// 获取绘制位置
-	virtual void GetLocation(int& x, int& y) = 0;
-
-	// 获取绘制大小
-	virtual void GetSize(int& w, int& h) = 0;
-
-	// 获取旋转
-	virtual void GetRotate(float& angle) = 0;
+	// 获取区域
+	virtual D2D1_RECT_F GetRect() { return this->draw_rect; }
 
 };
 

@@ -136,8 +136,7 @@ UI_Plane* PlaneFactory::BuildOnePlane(const char* filename) {
 
 					// 设置属性
 					if (_newui) {
-						_newui->SetLocation(_data->x, _data->y);
-						_newui->SetSize(_data->width, _data->height);
+						_newui->SetRect(_data->x, _data->y, _data->width, _data->height);
 
 						// 特别属性
 						switch (_data->uiType) {
@@ -161,8 +160,7 @@ UI_Plane* PlaneFactory::BuildOnePlane(const char* filename) {
 							}
 							else if (_data->resPath_buttonType == UI_Button::ButtonStyle_Four) {
 								alise_button->Create(_data->resPath_out, _data->resPath_in, _data->resPath_down, _data->resPath_disable);
-								alise_button->SetLocation(_data->x, _data->y);		// 未指定位置和大小，需要重新设置
-								alise_button->SetSize(_data->width, _data->height);
+								alise_button->SetRect(_data->x, _data->y, _data->width, _data->height);
 							}
 							alise_button->AddStaticText(_data->lable_title);
 
@@ -195,8 +193,7 @@ UI_Plane* PlaneFactory::BuildOnePlane(const char* filename) {
 							// 四张图
 							else if (_data->resPath_buttonType == UI_CheckBox::CheckBoxStyle_OneFour) {
 								alise_checkbox->Create(_data->resPath_out, _data->resPath_in, _data->resPath_down, _data->resPath_disable);
-								alise_checkbox->SetLocation(_data->x, _data->y);		// 未指定位置和大小，需要重新设置
-								alise_checkbox->SetSize(_data->width, _data->height);
+								alise_checkbox->SetRect(_data->x, _data->y, _data->width, _data->height);
 							}
 							// 两张图 - 未实装
 							else if (_data->resPath_buttonType == UI_CheckBox::CheckBoxStyle_ChangeOp_Two) {
@@ -325,8 +322,7 @@ std::vector<UI_Base*> PlaneFactory::BuildUIByFile(const char* filename, std::fun
 
 					// 设置属性
 					if (_newui) {
-						_newui->SetLocation(_data->x, _data->y);
-						_newui->SetSize(_data->width, _data->height);
+						_newui->SetRect(_data->x, _data->y, _data->width, _data->height);
 
 						// 特别属性
 						switch (_data->uiType) {
@@ -350,8 +346,7 @@ std::vector<UI_Base*> PlaneFactory::BuildUIByFile(const char* filename, std::fun
 							}
 							else if (_data->resPath_buttonType == UI_Button::ButtonStyle_Four) {
 								alise_button->Create(_data->resPath_out, _data->resPath_in, _data->resPath_down, _data->resPath_disable);
-								alise_button->SetLocation(_data->x, _data->y);		// 未指定位置和大小，需要重新设置
-								alise_button->SetSize(_data->width, _data->height);
+								alise_button->SetRect(_data->x, _data->y, _data->width, _data->height);
 							}
 							alise_button->AddStaticText(_data->lable_title);
 
@@ -392,8 +387,7 @@ std::vector<UI_Base*> PlaneFactory::BuildUIByFile(const char* filename, std::fun
 							// 四张图
 							else if (_data->resPath_buttonType == UI_CheckBox::CheckBoxStyle_OneFour) {
 								alise_checkbox->Create(_data->resPath_out, _data->resPath_in, _data->resPath_down, _data->resPath_disable);
-								alise_checkbox->SetLocation(_data->x, _data->y);		// 未指定位置和大小，需要重新设置
-								alise_checkbox->SetSize(_data->width, _data->height);
+								alise_checkbox->SetRect(_data->x, _data->y, _data->width, _data->height);
 							}
 							// 两张图 - 未实装
 							else if (_data->resPath_buttonType == UI_CheckBox::CheckBoxStyle_ChangeOp_Two) {

@@ -1,13 +1,14 @@
 #ifndef _Collision_h_
 #define _Collision_h_
 
+#include <d2d1.h>				// 2d
 
 // 判断点在区域内
-bool Pos_In_Rect(int x, int y, int rect_left, int rect_top, int rect_right, int rect_bottom);
+bool Pos_In_Rect(float x, float y, float rect_left, float rect_top, float rect_right, float rect_bottom);
 
 // 判定区域交互
 // red 主区域， blue 判定区域
-bool Rect_In_Rect(int red_left, int red_top, int red_right, int red_bottom, int blue_left, int blue_top, int blue_right, int blue_bottom);
+bool Rect_In_Rect(float red_left, float red_top, float red_right, float red_bottom, float blue_left, float blue_top, float blue_right, float blue_bottom);
 
 // 区域交互
 // red 主区域， blue 判定区域
@@ -15,7 +16,15 @@ bool Rect_In_Rect(int red_left, int red_top, int red_right, int red_bottom, int 
 // 2 = 区域内
 // 3 = 其他
 // 0 = 未知
-int CheckRect(int red_left, int red_top, int red_right, int red_bottom, int blue_left, int blue_top, int blue_right, int blue_bottom);
+int CheckRect(float red_left, float red_top, float red_right, float red_bottom, float blue_left, float blue_top, float blue_right, float blue_bottom);
+
+// 区域交互
+// red 主区域， blue 判定区域
+// 1 = 不相交
+// 2 = 区域内
+// 3 = 其他
+// 0 = 未知
+int CheckRect(D2D1_RECT_F rect1, D2D1_RECT_F rect2);
 
 //  中心点
 enum CenterType {

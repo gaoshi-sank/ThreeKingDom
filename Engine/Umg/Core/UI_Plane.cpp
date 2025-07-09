@@ -52,12 +52,12 @@ void UI_Plane::AddAttachedUI(UI_Base* attached_ui) {
 }
 
 // 事件驱动
-void UI_Plane::CheckEvent(unsigned int* param) {
-	if (param) {
+void UI_Plane::CheckEvent(uint32_t eventType, std::vector<uint32_t> eventParams) {
+	if (!eventParams.empty()) {
 		for (auto& _ui : ListAttached) {
 			// 基础判断条件
 			if (_ui && _ui->window_id != 0x00 && !_ui->window_release) {
-				_ui->CheckEvent(param);
+				_ui->CheckEvent(eventType, eventParams);
 			}
 		}
 	}
@@ -93,26 +93,16 @@ void UI_Plane::Draw() {
 	}
 }
 
-// 设置位置
-void UI_Plane::SetLocation(int x, int y) {
+// 设置区域
+void UI_Plane::SetRect(int x, int y, int width, int height) {
 	if (window_release) {
 		return;
 	}
 
 	this->window_x = x;
 	this->window_y = y;
-
-}
-
-// 设置大小
-void UI_Plane::SetSize(int w, int h) {
-	if (window_release) {
-		return;
-	}
-
-	this->window_width = w;
-	this->window_height = h;
-
+	this->window_width = width;
+	this->window_height = height;
 }
 
 // 设置可见性

@@ -1,9 +1,17 @@
-#include <Windows.h>
-#include "GameManager.h"
+#include "../Engine/EngineProvider.h"
+#include "Scene_Test.h"
 
-// 主函数入口
-int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int inShowCmd) {
-    GameManager::InitGameManager(hinstance);
-    GameManager::RunGameManager();
+// 主函数
+int APIENTRY wWinMain(
+    _In_        HINSTANCE hInstance,
+    _In_opt_    HINSTANCE hPrevInstance,
+    _In_        LPWSTR    lpCmdLine,
+    _In_        int       nCmdShow)
+{
+    EngineProvider::InitEngine(hInstance, false, 800, 600);
+
+    SceneManager::AddScene(new Scene_Test());
+
+    EngineProvider::RunEngine();
     return 0;
 }

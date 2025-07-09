@@ -78,15 +78,15 @@ void UIFactory::DelWindow(UI_Base* _ui) {
 
 
 // 事件驱动
-void UIFactory::CheckEvent(unsigned int* param) {
-	if (g_ui && param) {
+void UIFactory::CheckEvent(uint32_t eventType, std::vector<uint32_t> eventParams) {
+	if (g_ui && !eventParams.empty()) {
 		for (auto& _ui : g_ui->list) {
 			// 基础判断条件
 			if (_ui && _ui->window_id != 0x00 && !_ui->window_release) {
 				// 附加判断条件
 				// 不是附属单位
 				if (!_ui->window_attached) {
-					_ui->CheckEvent(param);
+					_ui->CheckEvent(eventType, eventParams);
 				}
 			}
 		}

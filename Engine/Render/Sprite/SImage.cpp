@@ -1,39 +1,41 @@
 #include "SImage.h"
 #include "../../EngineHelper.h"
 #include "../RenderFactory.h"
-#include "../Direct2D/Render_Direct2d.h"
+
 
 // 构造
 SImage::SImage() {
-	// 绘制区
-	draw_x = draw_y = draw_width = draw_height = 0;
-
 	// 图像属性
 	_image = nullptr;
 	opacity = 1.0f;
 	angle = 0.0f;
-	src_x = src_y = src_width = src_height = 0;
+	src_rect = D2D1::RectF();
 }
 
 // 构造
 SImage::SImage(const char* filename) : SImage(){
 	auto render = RenderFactory::GetInstance()->GetRender();
-	if (filename && render && !this->_image) {
-		// 创建图像句柄
-		this->_image = render->CreateImage(filename);
+	if (filename && render) {
+		if (!_image) {
+			_image = render->CreateImage(filename);
+		}
 
 		// 默认
-		render->GetImageSize(this->_image, src_width, src_height);
-		draw_width = draw_x + src_width;
-		draw_height = draw_y + src_height;
+		if (_image) {
+			auto size_f = _image->GetSize();
+			src_rect.right = src_rect.left + size_f.width;
+			src_rect.bottom = src_rect.top + size_f.height;
+			if (draw_rect.right == 0 || draw_rect.bottom == 0) {
+				draw_rect = src_rect;
+			}
+		}
 	}
 }
 
 // 析构
 SImage::~SImage() {
-	auto render = RenderFactory::GetInstance()->GetRender();
-	if (_image && render) {
-		render->ReleaseObject(_image);
+	if (_image) {
+		_image->Release();
 	}
 	_image = nullptr;
 }
@@ -48,31 +50,24 @@ void SImage::Draw() {
 	if (_image && visiable) {
 		auto render = RenderFactory::GetInstance()->GetRender();
 		if (render) {
-			render->RenderImage(_image, draw_x, draw_y, draw_width, draw_height, src_x, src_y, src_width, src_height, opacity, angle);
+			render->RenderImage(_image, this->draw_rect, this->src_rect, opacity, angle);
 		}
 	}
 }
 
 // 绘制图像 - 外部提供图像资源
-void SImage::Draw(void* other_image) {
+void SImage::Draw(ID2D1Bitmap* other_image) {
 	if (other_image) {
 		auto render = RenderFactory::GetInstance()->GetRender();
 		if (render) {
-			render->RenderImage(other_image, draw_x, draw_y, draw_width, draw_height, src_x, src_y, src_width, src_height, opacity, angle);
+			render->RenderImage(other_image, this->draw_rect, this->src_rect, opacity, angle);
 		}
 	}
 }
 
-// 设置绘制位置
-void SImage::SetLocation(int x, int y) {
-	this->draw_x = x;
-	this->draw_y = y;
-}
-
-// 设置绘制大小
-void SImage::SetSize(int w, int h) {
-	this->draw_width = w;
-	this->draw_height = h;
+// 设置绘制区域
+void SImage::SetRect(D2D1_RECT_F _rect) {
+	this->draw_rect = _rect;
 }
 
 // 设置旋转
@@ -80,42 +75,42 @@ void SImage::SetRotate(float _angle) {
 	this->angle = _angle;
 }
 
-// 设置裁剪
-void SImage::SetCrop(int x, int y, int width, int height) {
-	this->src_x = x;
-	this->src_y = y;
-	this->src_width = width;
-	this->src_height = height;
+// 设置裁剪区域
+void SImage::SetCrop(D2D1_RECT_F cropRect) {
+	this->src_rect = cropRect;
 }
 
 // 获取图像
-void* SImage::GetImage() {
+ID2D1Bitmap* SImage::GetImage() {
 	return this->_image;
 }
 
-// 获取图像大小
-bool SImage::GetImageSize(int& width, int& height) {
-	auto render = RenderFactory::GetInstance()->GetRender();
-	if (render && _image) {
-		render->GetImageSize(_image, width, height);
-		return true;
-	}
-	return false;
-}
-
-// 获取绘制位置
-void SImage::GetLocation(int& x, int& y) {
-	x = this->draw_x;
-	y = this->draw_y;
-}
-
-// 获取绘制大小
-void SImage::GetSize(int& w, int& h) {
-	w = this->draw_width;
-	h = this->draw_height;
-}
-
 // 获取旋转
-void SImage::GetRotate(float& angle) {
-	angle = this->angle;
+float SImage::GetRotate() {
+	return this->angle;
+}
+
+// 获取裁剪区域
+D2D1_RECT_F SImage::GetCrop() {
+	return this->src_rect;
+}
+
+// 保存数据
+void SImage::SaveToFile(const char* filename) {
+	if (filename) {
+		auto render = RenderFactory::GetInstance()->GetRender();
+		if (render) {
+			const size_t length = strlen(filename);
+			if (length > 0) {
+				wchar_t* savepath = new wchar_t[length];
+				if (savepath) {
+					memset(savepath, 0, sizeof(wchar_t) * length);
+					auto ret = CharToWChar(filename, savepath);
+					if (ret) {
+						render->SaveBitmapToFile(this->_image, savepath);
+					}
+				}
+			}
+		}
+	}
 }

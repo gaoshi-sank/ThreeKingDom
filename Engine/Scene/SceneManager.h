@@ -36,6 +36,9 @@ public:
 	// 绘制
 	static void DrawScene();
 
+	// 事件驱动
+	static void SceneEvent(uint32_t eventType, std::vector<uint32_t> eventParams);
+
 	// 加入场景
 	static void AddScene(Scene_Base* _scene);
 
@@ -54,6 +57,9 @@ private:
 
 	// 释放
 	void Release();
+
+	// 事件驱动
+	void CheckEvent(uint32_t eventType, std::vector<uint32_t> eventParams);
 
 };
 

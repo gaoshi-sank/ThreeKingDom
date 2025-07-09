@@ -34,6 +34,9 @@ public:
 	// 停止
 	virtual void Stop() = 0;
 
+	// 事件驱动
+	virtual void CheckEvent(uint32_t eventType, std::vector<uint32_t> eventParams) = 0;
+
 	// 回调函数
 	virtual void Callback(std::function<void(int*)> _callback);
 };

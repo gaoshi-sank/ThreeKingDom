@@ -7,17 +7,18 @@
 class SText : public Sprite {
 private:
 	// 文本
-	std::string text;			// 文字
-	wchar_t* render_text;		// 渲染用
-	float font_size;			// 文字大小
-	void* text_format;			// 文字格式
-	void* text_layout;			// 文本布局 
-	void* text_brash;			// 底子画刷 
-	int text_color[3];			// 画刷颜色
-	int max_fontlength;			// 可绘制文本长度
-	int text_HorizontalStyle;	// 文本水平风格 - 1 默认居中
-	int text_VerticalStyle;		// 文本垂直风格 - 1 默认居中
-	int text_swrapping;			// 换行格式
+	std::string text;						// 文字
+	wchar_t* render_text;					// 渲染用
+	float font_size;						// 文字大小
+	IDWriteTextFormat* text_format;			// 文字格式
+	IDWriteTextLayout* text_layout;			// 文本布局 
+	ID2D1SolidColorBrush* text_brash;		// 底子画刷 
+	D2D1_COLOR_F text_color;				// 画刷颜色
+
+	int max_fontlength;						// 可绘制文本长度
+	int text_HorizontalStyle;				// 文本水平风格 - 1 默认居中
+	int text_VerticalStyle;					// 文本垂直风格 - 1 默认居中
+	int text_swrapping;						// 换行格式
 
 
 public:
@@ -37,27 +38,16 @@ public:
 	virtual void Draw();
 
 	// 绘制文本
-	virtual void Draw(const std::string& render_text, int dx, int dy, int dw, int dh);
+	virtual void Draw(const std::string& render_text, D2D1_RECT_F other_rect);
 
-	// 设置绘制位置
-	virtual void SetLocation(int x, int y);
+	// 设置绘制区域
+	virtual void SetRect(D2D1_RECT_F _rect);
 
-	// 设置绘制大小
-	virtual void SetSize(int w, int h);
-
-	// 设置旋转 
-	// 暂未实装
+	// 设置旋转
 	virtual void SetRotate(float angle);
 
-	// 获取绘制位置
-	virtual void GetLocation(int& x, int& y);
-
-	// 获取绘制大小
-	virtual void GetSize(int& w, int& h);
-
-	// 获取旋转
-	// 暂未实装
-	virtual void GetRotate(float& angle);
+	// 获取图像
+	virtual ID2D1Bitmap* GetImage();
 
 	// 重设布局 
 	// 水平格式: 居中
@@ -72,7 +62,7 @@ public:
 	void ReSetFont(float font_size = 18.0f);
 
 	// 重设颜色 
-	void ReSetColor(int red, int green, int blue);
+	void ReSetColor(D2D1_COLOR_F _color);
 
 
 };

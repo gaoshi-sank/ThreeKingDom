@@ -31,7 +31,7 @@ public:
 	virtual void AddStaticText(const std::string& text);
 
 	// 事件驱动
-	virtual void CheckEvent(unsigned int* param);
+	virtual void CheckEvent(uint32_t eventType, std::vector<uint32_t> eventParams);
 
 	// 更新
 	virtual void Update();
@@ -40,10 +40,7 @@ public:
 	virtual void Draw();
 
 	// 设置位置
-	virtual void SetLocation(int x, int y);
-
-	// 设置大小
-	virtual void SetSize(int w, int h);
+	virtual void SetRect(int x, int y, int width, int height);
 
 	// 设置可见性
 	virtual void SetVisiable(bool visible = false);

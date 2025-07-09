@@ -23,8 +23,10 @@ private:
 	char szTitle[32];			// 标题
 	char szWindowClass[32];		// 类名
 
-	friend class WindowFactory;
+	friend class WindowFactory; // 友元类
 
+	// 主线程回调用函数
+	std::function<void()> msgCallback;
 
 public:
 	// 构造
@@ -41,7 +43,7 @@ public:
 
 private:
 	// 创建
-	void Create();
+	void Create(std::function<void()> _callback);
 
 	// 窗口回调函数
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -70,11 +72,11 @@ public:
 
 	// 新建一个窗口
 	// 默认全屏
-	static std::shared_ptr<Window> Build();
+	static std::shared_ptr<Window> Build(std::function<void()> _callback = nullptr);
 
 	// 新建一个窗口
 	// 参数 - 位置和大小
-	static std::shared_ptr<Window> Build(int x, int y, int width, int height);
+	static std::shared_ptr<Window> Build(int x, int y, int width, int height, std::function<void()> _callback = nullptr);
 };
 
 

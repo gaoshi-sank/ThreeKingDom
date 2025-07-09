@@ -38,7 +38,7 @@ public:
 	static void DelWindow(UI_Base* _ui);
 
 	// 事件驱动
-	static void CheckEvent(unsigned int* param);
+	static void CheckEvent(uint32_t eventType, std::vector<uint32_t> eventParams);
 
 	// 复选框事件处理
 	static void CheckBoxParam(int ui_id, int group_id, int state);

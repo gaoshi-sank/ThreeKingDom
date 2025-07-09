@@ -65,7 +65,7 @@ public:
 	virtual bool Create() = 0;
 
 	// 事件驱动
-	virtual void CheckEvent(unsigned int* param) = 0;
+	virtual void CheckEvent(uint32_t eventType, std::vector<uint32_t> eventParams) = 0;
 
 	// 更新
 	virtual void Update() = 0;
@@ -73,11 +73,8 @@ public:
 	// 绘制
 	virtual void Draw() = 0;
 
-	// 设置位置
-	virtual void SetLocation(int x, int y) = 0;
-
-	// 设置大小
-	virtual void SetSize(int w, int h) = 0;
+	// 设置区域
+	virtual void SetRect(int x, int y, int width, int height) = 0;
 
 	// 设置可见性
 	virtual void SetVisiable(bool visible = false) = 0;

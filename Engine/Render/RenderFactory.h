@@ -1,19 +1,13 @@
 #ifndef _RenderFactory_h_
 #define _RenderFactory_h_
 
-
+#include <iostream>
+#include <memory>
 #include "Render.h"
 
 
 // 渲染工厂
 class RenderFactory {
-public:
-	// 渲染器类型
-	enum RenderType {
-		RenderType_Direct2D = 1,	// Direct2D
-		RenderType_Sfml,			// SFML - 三方库
-	};
-
 private:
 	// 构造
 	RenderFactory();
@@ -22,20 +16,13 @@ private:
 	~RenderFactory();
 
 	// 属性
-	int renderType;
-	Render* g_render;
-
-	// Direct2D用参数
-	HWND g_hWnd;
-	int direct2d_width, direct2d_height;
-
-	// 静态值
-	static RenderFactory* g_renderFactory;
+	HWND m_hWnd;
+	int32_t m_width, m_height;
+	std::shared_ptr<Render> m_render;
 
 public:
 	// 初始化渲染器
-	// RenderType_Direct2D: 窗口句柄，窗口宽度，窗口高度
-	static void InitRender(int renderType, ...);
+	static void InitRender(HWND hWnd, int width, int height);
 
 	// 获取渲染器工厂
 	static RenderFactory* GetInstance();
@@ -44,14 +31,11 @@ public:
 	static void Release();
 
 	// 获取渲染器
-	Render* GetRender();
+	std::shared_ptr<Render> GetRender();
 
 private:
-	// 初始化Diect2D类型渲染器
-	void InitRender_Direct2D();
-
-	// 初始化Sfml类型渲染器
-	void InitRender_SFML();
+	// 加载渲染器
+	void LoadRender();
 
 };
 

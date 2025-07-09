@@ -8,7 +8,7 @@
 #include <sstream>
 
 // 静态值
-static std::shared_ptr<LogSystem> g_log = std::make_shared<LogSystem>(1);
+static std::shared_ptr<LogSystem> g_log = std::make_shared<LogSystem>(0);
 static std::string debugConfig = "debugConfig.txt";		// debug配置
 static std::string logFile = "logFile.txt";				// log输出文件
 

@@ -33,33 +33,26 @@ UI_Base::~UI_Base() {
 }
 
 // 基础事件
-void UI_Base::CheckEvent(unsigned int* param) {
-	if (window_release || !param) {
+void UI_Base::CheckEvent(uint32_t eventType, std::vector<uint32_t> eventParams) {
+	if (window_release || eventParams.empty()) {
 		return;
 	}
 
-	int param_len = param[0];
-	if (param_len >= 2) {
-		auto message = param[1];
+	if (eventType == WM_MOUSEMOVE) {
+		// 默认不在窗口
+		window_inrect = false;
 
-		// 基础光标位置
-		if (window_mouse && message == WM_MOUSEMOVE) {
-			// 默认不在窗口
-			window_inrect = false;	
+		// 正确获取
+		if ((int)eventParams.size() >= 2) {
+			mouse_posx = eventParams[0];
+			mouse_posy = eventParams[1];
 
-			// 正确获取
-			if (param_len >= 3) {
-				LPARAM lParam = (LPARAM)param[2];
-				mouse_posx = GET_X_LPARAM(lParam);
-				mouse_posy = GET_Y_LPARAM(lParam);
+			// 判断顶层
+			window_top = UIFactory::GetLevelTop(mouse_posx, mouse_posy, this);
 
-				// 判断顶层
-				window_top = UIFactory::GetLevelTop(mouse_posx, mouse_posy, this);
-
-				// 判断区域内
-				if (window_top && Point_In_Rect(mouse_posx, mouse_posy, window_x, window_y, window_width, window_height)) {
-					window_inrect = true;
-				}
+			// 判断区域内
+			if (window_top && Point_In_Rect(mouse_posx, mouse_posy, window_x, window_y, window_width, window_height)) {
+				window_inrect = true;
 			}
 		}
 	}

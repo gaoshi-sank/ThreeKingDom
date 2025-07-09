@@ -7,11 +7,10 @@
 class SImage : public Sprite {
 private:
 	// 图像
-	void* _image;				// 图像对象
-	float opacity;				// 不透明度
-	float angle;				// 旋转角度
-	int src_x, src_y,
-		src_width, src_height;	// 资源裁剪区
+	ID2D1Bitmap* _image;	// 图像对象
+	float opacity;			// 不透明度
+	float angle;			// 旋转角度
+	D2D1_RECT_F src_rect;	// 资源裁剪区
 
 public:
 	// 构造
@@ -30,34 +29,29 @@ public:
 	virtual void Draw();
 
 	// 绘制图像 - 外部提供图像资源
-	virtual void Draw(void* _image);
+	virtual void Draw(ID2D1Bitmap* _image);
 
-	// 设置绘制位置
-	virtual void SetLocation(int x, int y);
+	// 设置绘制区域
+	virtual void SetRect(D2D1_RECT_F _rect);
 
-	// 设置绘制大小
-	virtual void SetSize(int w, int h);
-
-	// 设置旋转 
+	// 设置旋转
 	virtual void SetRotate(float angle);
 
-	// 设置裁剪
-	virtual void SetCrop(int x, int y, int width, int height);
+	// 设置裁剪区域
+	virtual void SetCrop(D2D1_RECT_F cropRect);
 
 	// 获取图像
-	virtual void* GetImage();
-
-	// 获取图像大小
-	virtual bool GetImageSize(int& width, int& height);
-
-	// 获取绘制位置
-	virtual void GetLocation(int& x, int& y);
-
-	// 获取绘制大小
-	virtual void GetSize(int& w, int& h);
+	virtual ID2D1Bitmap* GetImage();
 
 	// 获取旋转
-	virtual void GetRotate(float& angle);
+	virtual float GetRotate();
+
+	// 获取裁剪区域
+	virtual D2D1_RECT_F GetCrop();
+
+	// 保存数据
+	virtual void SaveToFile(const char* filename );
+
 };
 
 #endif // !_SImage_h_

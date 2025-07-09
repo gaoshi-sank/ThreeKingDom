@@ -20,10 +20,10 @@ public:
 	virtual ~Animation();
 
 	// 创建
-	void CreateByMul(const char* filename, int x, int y, int width, int height, int cropx = 0, int cropy = 0, int cropwidth = 0, int cropheight = 0);
+	void CreateByMul(const char* filename, D2D1_RECT_F drawRect, D2D1_RECT_F cropRect);
 
 	// 创建
-	void CreateByOne(const char* filename, int x, int y, int width, int height, int cropwidth, int cropheight);
+	void CreateByOne(const char* filename, D2D1_RECT_F drawRect, D2D1_RECT_F cropRect);
 
 	// 创建
 	void AddSprite(SImage* _newsprite);
@@ -33,30 +33,19 @@ public:
 	void SetPlaySpeed(int number);
 
 	// 更新
-	virtual void Update() override;
+	virtual void Update();
 
 	// 绘制
-	virtual void Draw() override;
+	virtual void Draw();
 
-	// 设置绘制位置
-	virtual void SetLocation(int x, int y) override;
-
-	// 设置绘制大小
-	virtual void SetSize(int w, int h) override;
+	// 设置绘制区域
+	virtual void SetRect(D2D1_RECT_F _rect);
 
 	// 设置旋转
-	// 暂未实装
-	virtual void SetRotate(float angle) override;
+	virtual void SetRotate(float angle);
 
-	// 获取绘制位置
-	virtual void GetLocation(int& x, int& y);
-
-	// 获取绘制大小
-	virtual void GetSize(int& w, int& h);
-
-	// 获取旋转
-	// 暂未实装
-	virtual void GetRotate(float& angle);
+	// 获取图像
+	virtual ID2D1Bitmap* GetImage();
 
 private:
 	// 计时器回调

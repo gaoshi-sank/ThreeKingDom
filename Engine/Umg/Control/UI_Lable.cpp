@@ -48,8 +48,7 @@ bool UI_Lable::Create(const std::string& filename, int x, int y, int w, int h) {
 		}
 	}
 
-	SetLocation(x, y);
-	SetSize(w, h);
+	SetRect(x, y, w, h);
 	return true;
 }
 
@@ -67,14 +66,13 @@ void UI_Lable::AddStaticText(const std::string& text) {
 	}
 
 	if (_text) {
-		_text->SetLocation(window_x, window_y);
-		_text->SetSize(window_width, window_height);
+		_text->SetRect(D2D1::RectF((float)window_x, (float)window_y, (float)window_x + window_width, (float)window_y + window_height));
 		_text->ReSetLayout();
 	}
 }
 
 // 事件驱动
-void UI_Lable::CheckEvent(unsigned int* param) {
+void UI_Lable::CheckEvent(uint32_t eventType, std::vector<uint32_t> eventParams) {
 	// 标签UI不参与
 }
 
@@ -115,44 +113,25 @@ void UI_Lable::Draw() {
 
 }
 
-// 设置位置
-void UI_Lable::SetLocation(int x, int y) {
+// 设置区域
+void UI_Lable::SetRect(int x, int y, int width, int height) {
 	if (window_release) {
 		return;
 	}
 
 	this->window_x = x;
 	this->window_y = y;
+	this->window_width = width;
+	this->window_height = height;
 
 	// 图像
 	if (_image) {
-		_image->SetLocation(x, y);
+		_image->SetRect(D2D1::RectF((float)window_x, (float)window_y, (float)window_x + window_width, (float)window_y + window_height));
 	}
 
 	// 文本
 	if (_text) {
-		_text->SetLocation(x, y);
-	}
-}
-
-// 设置大小
-void UI_Lable::SetSize(int w, int h) {
-	if (window_release) {
-		return;
-	}
-
-	this->window_width = w;
-	this->window_height = h;
-
-	// 图像
-	if (_image) {
-		_image->SetSize(w, h);
-	}
-
-
-	// 文本
-	if (_text) {
-		_text->SetSize(w, h);
+		_text->SetRect(D2D1::RectF((float)window_x, (float)window_y, (float)window_x + window_width, (float)window_y + window_height));
 	}
 }
 

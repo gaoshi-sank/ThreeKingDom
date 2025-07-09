@@ -1,35 +1,30 @@
 #include "SText.h"
 #include "../../EngineHelper.h"
 #include "../RenderFactory.h"
-#include "../Direct2D/Render_Direct2d.h"
 
 // 构造
 SText::SText() {
 	// 文本属性
-	text = "";					// 文字
-	render_text = nullptr;		// 渲染用文字
-	font_size = 18.0f;			// 文字大小
-	text_format = nullptr;		// 文字格式
-	text_layout = nullptr;		// 文本布局 
-	text_brash = nullptr;		// 底子画刷 
-	memset(text_color, 0, sizeof(int) * 3);	// 画刷颜色
-	max_fontlength = 1024;		// 可绘制文本长度
-	text_HorizontalStyle = 1;	// 文本水平风格
-	text_VerticalStyle = 1;		// 文本垂直风格
-	text_swrapping = 0;			// 换行格式
+	text = "";							// 文字
+	render_text = nullptr;				// 渲染用文字
+	font_size = 18.0f;					// 文字大小
+	text_format = nullptr;				// 文字格式
+	text_layout = nullptr;				// 文本布局 
+	text_brash = nullptr;				// 底子画刷 
+	max_fontlength = 1024;				// 可绘制文本长度
+	text_HorizontalStyle = 1;			// 文本水平风格
+	text_VerticalStyle = 1;				// 文本垂直风格
+	text_swrapping = 0;					// 换行格式
+	text_color = D2D1::ColorF(0, 0, 0);	// 画刷颜色
 
 	// 创建可用对象
 	ReSetFont(font_size);
-	ReSetColor(text_color[0], text_color[1], text_color[2]);
+	ReSetColor(text_color);
 }
 
 // 构造
 SText::SText(const char* _text) : SText() {
-	// 重新设置文本
 	ReSetText(_text);
-
-	// 重设文本布局
-	ReSetLayout();
 }
 
 // 析构
@@ -41,11 +36,14 @@ SText::~SText() {
 	}
 
 	// 文字格式-布局-画刷
-	auto render = RenderFactory::GetInstance()->GetRender();
-	if (render) {
-		render->ReleaseObject(text_format);
-		render->ReleaseObject(text_layout);
-		render->ReleaseObject(text_brash);
+	if (text_format) {
+		text_format->Release();
+	}
+	if (text_layout) {
+		text_layout->Release();
+	}
+	if (text_brash) {
+		text_brash->Release();
 	}
 
 	text_format = nullptr;
@@ -63,13 +61,13 @@ void SText::Draw() {
 	if (render_text && visiable) {
 		auto render = RenderFactory::GetInstance()->GetRender();
 		if (render) {
-			render->RenderText(render_text, draw_x, draw_y, draw_width, draw_height, text_layout, text_brash);
+			render->RenderText(render_text, draw_rect, text_layout, text_brash);
 		}
 	}
 }
 
 // 绘制文本
-void SText::Draw(const std::string& draw_text, int other_x, int other_y, int other_width, int other_height) {
+void SText::Draw(const std::string& draw_text, D2D1_RECT_F other_rect) {
 	if (!draw_text.empty() && visiable) {
 		auto render = RenderFactory::GetInstance()->GetRender();
 		if (render) {
@@ -81,46 +79,25 @@ void SText::Draw(const std::string& draw_text, int other_x, int other_y, int oth
 				CharToWChar(draw_text.c_str(), other_text);
 
 				// 渲染
-				render->RenderText(other_text, other_x, other_y, other_width, other_height, text_layout, text_brash);
+				render->RenderText(other_text, other_rect, text_layout, text_brash);
 			}
 		}
 	}
 }
 
-// 设置绘制位置
-void SText::SetLocation(int x, int y) {
-	this->draw_x = x;
-	this->draw_y = y;
+// 设置绘制区域
+void SText::SetRect(D2D1_RECT_F _rect) {
+	this->draw_rect = _rect;
 }
 
-// 设置绘制大小
-void SText::SetSize(int w, int h) {
-	this->draw_width = w;
-	this->draw_height = h;
-}
-
-// 设置旋转 
-// 暂未实装
+// 设置旋转
 void SText::SetRotate(float angle) {
-
+	// 不实例化
 }
 
-// 获取绘制位置
-void SText::GetLocation(int& x, int& y) {
-	x = this->draw_x;
-	y = this->draw_y;
-}
-
-// 获取绘制大小
-void SText::GetSize(int& w, int& h) {
-	w = this->draw_width;
-	h = this->draw_height;
-}
-
-// 获取旋转
-// 暂未实装
-void SText::GetRotate(float& angle) {
-
+// 获取图像
+ID2D1Bitmap* SText::GetImage() {
+	return nullptr;
 }
 
 // 重设布局 
@@ -150,11 +127,13 @@ void SText::ReSetText(const char* _text) {
 			delete[] this->render_text;
 			this->render_text = nullptr;
 		}
-
 		size_t loopnum = text.size() / limit_length;
 		this->render_text = new wchar_t[limit_length * (loopnum + 1)];
 		memset(this->render_text, '\0', sizeof(wchar_t) * (limit_length * (loopnum + 1)));
 		CharToWChar(this->text.c_str(), this->render_text);
+		
+		// 重设文本布局
+		ReSetLayout();
 	}
 }
 
@@ -162,17 +141,23 @@ void SText::ReSetText(const char* _text) {
 void SText::ReSetFont(float _font_size) {
 	auto render = RenderFactory::GetInstance()->GetRender();
 	if (render) {
-		render->ReleaseObject(text_format);
+		if (text_format) {
+			text_format->Release();
+			text_format = nullptr;
+		}
 		text_format = render->CreateTextFormat(_font_size);
 	}
 }
 
 // 重设颜色 
-void SText::ReSetColor(int red, int green, int blue) {
+void SText::ReSetColor(D2D1_COLOR_F _color) {
 	auto render = RenderFactory::GetInstance()->GetRender();
 	if (render) {
-		render->ReleaseObject(text_brash);
-		text_brash = render->CreateBrush(red, green, blue);
+		if (text_brash) {
+			text_brash->Release();
+			text_brash = nullptr;
+		}
+		text_brash = render->CreateBrush(_color);
 	}
 }
 

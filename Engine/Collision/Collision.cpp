@@ -1,7 +1,7 @@
 #include "Collision.h"
 
 // 判断点在区域内
-bool Pos_In_Rect(int x, int y, int rect_left, int rect_top, int rect_right, int rect_bottom) {
+bool Pos_In_Rect(float x, float y, float rect_left, float rect_top, float rect_right, float rect_bottom) {
 	if (rect_left <= x && x <= rect_right) {
 		if (rect_top <= y && y <= rect_bottom) {
 			return true;
@@ -12,7 +12,7 @@ bool Pos_In_Rect(int x, int y, int rect_left, int rect_top, int rect_right, int 
 
 // 判定区域交互
 // red 主区域， blue 判定区域
-bool Rect_In_Rect(int red_left, int red_top, int red_right, int red_bottom, int blue_left, int blue_top, int blue_right, int blue_bottom) {
+bool Rect_In_Rect(float red_left, float red_top, float red_right, float red_bottom, float blue_left, float blue_top, float blue_right, float blue_bottom) {
 	// 完全处于 [ [] ]
 	if ((red_left < blue_left && blue_left < red_right) && (red_left < blue_right && blue_right < red_right)) {
 		if ((red_top < blue_top && blue_top < red_bottom) && (red_top < blue_bottom && blue_bottom < red_bottom)) {
@@ -22,7 +22,6 @@ bool Rect_In_Rect(int red_left, int red_top, int red_right, int red_bottom, int 
 			}
 		}
 	}
-
 	return false;
 }
 
@@ -32,7 +31,7 @@ bool Rect_In_Rect(int red_left, int red_top, int red_right, int red_bottom, int 
 // 2 = 区域内
 // 3 = 其他
 // 0 = 未知
-int CheckRect(int red_left, int red_top, int red_right, int red_bottom, int blue_left, int blue_top, int blue_right, int blue_bottom) {
+int CheckRect(float red_left, float red_top, float red_right, float red_bottom, float blue_left, float blue_top, float blue_right, float blue_bottom) {
 	// 不交集
 	if ((blue_left < red_left && blue_right < red_left) ||			// 判定在主区域左边
 		(blue_left > red_right && blue_right > red_left) ||			// 判定在主区域右边
@@ -54,7 +53,15 @@ int CheckRect(int red_left, int red_top, int red_right, int red_bottom, int blue
 	return 0;
 }
 
-
+// 区域交互
+// red 主区域， blue 判定区域
+// 1 = 不相交
+// 2 = 区域内
+// 3 = 其他
+// 0 = 未知
+int CheckRect(D2D1_RECT_F rect1, D2D1_RECT_F rect2) {
+	return CheckRect(rect1.left, rect1.top, rect1.right, rect1.bottom, rect2.left, rect2.top, rect2.right, rect2.bottom);
+}
 
 Collision::Collision() {
 	box_x = 0.0f;

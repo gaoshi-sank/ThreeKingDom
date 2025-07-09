@@ -1,20 +1,21 @@
 #include "EngineProvider.h"
 
-int EngineProvider::buildEngine_state = 0;
+int EngineProvider::buildEngine_state = 0;			// 引擎构建状态
 EngineProvider* EngineProvider::g_eng = nullptr;
 
 // 构造
 EngineProvider::EngineProvider() {
 	// 属性
 	engine_hInstance = nullptr; // 进程句柄
-	update_Thread = nullptr;	// 更新用线程
 	render_Thread = nullptr;	// 渲染用线程
-	updateState = 0;			// 更新 - 状态
 	renderState = 0;			// 渲染 - 状态
 
 	// 配置
 	setting_fps = 0;
-	setting_render = 0;
+	setting_windowX = 0;
+	setting_windowY = 0;
+	setting_windowWidth = 0;
+	setting_windowHeight = 0;
 }
 
 // 析构
@@ -28,7 +29,7 @@ EngineProvider* EngineProvider::GetInstance() {
 }
 
 // 初始化引擎
-void EngineProvider::InitEngine(HINSTANCE _hinst, int renderType, bool isFull, int width, int height) {
+void EngineProvider::InitEngine(HINSTANCE _hinst, bool isFull, int width, int height) {
 	if (!g_eng) {
 		g_eng = new EngineProvider();
 	}
@@ -45,7 +46,6 @@ void EngineProvider::InitEngine(HINSTANCE _hinst, int renderType, bool isFull, i
 	}
 
 	g_eng->engine_hInstance = _hinst;
-	g_eng->setting_render = renderType;
 	g_eng->BuildEngineStruct(x, y, win32_width, win32_height, isFull);
 }
 
@@ -54,6 +54,14 @@ void EngineProvider::RunEngine() {
 	if (g_eng) {
 		g_eng->MainRunLoop();
 	}
+}
+
+// 获取程序窗口大小
+void EngineProvider::GetWindowSize(int& x, int& y, int& width, int& height) {
+	x = setting_windowX;
+	y = setting_windowY;
+	width = setting_windowWidth;
+	height = setting_windowHeight;
 }
 
 // 构建引擎
@@ -70,12 +78,20 @@ void EngineProvider::BuildEngineStruct(int x, int y, int width, int height, bool
 	TimerFactory::InitTimerFactory();
 
 	// 构建Win32系统
+	setting_windowX = x;
+	setting_windowY = y;
+	setting_windowWidth = width;
+	setting_windowHeight = height;
 	WindowFactory::SethInstance(engine_hInstance);
 	if (isFull) {
-		this->mainWindow = WindowFactory::Build();
+		this->mainWindow = WindowFactory::Build([&]() {
+			CallbackUpdate();
+		});
 	}
 	else {
-		this->mainWindow = WindowFactory::Build(x, y, width, height);
+		this->mainWindow = WindowFactory::Build(x, y, width, height, [&]() {
+			CallbackUpdate();
+		});
 	}
 
 
@@ -83,7 +99,7 @@ void EngineProvider::BuildEngineStruct(int x, int y, int width, int height, bool
 	InputFactory::InitInput(InputFactory::InputType_DirectInput8, engine_hInstance, mainWindow->GetHandle());
 
 	// 构建渲染系统
-	RenderFactory::InitRender(setting_render, mainWindow->GetHandle(), width, height);
+	RenderFactory::InitRender(mainWindow->GetHandle(), width, height);
 
 	// 构建UI系统
 	UIFactory::InitUIProvider();
@@ -93,11 +109,10 @@ void EngineProvider::BuildEngineStruct(int x, int y, int width, int height, bool
 
 
 	// 构建独立线程
-	updateState = 1;
 	renderState = 1;
-	update_Thread = new std::thread(&EngineProvider::ThreadLoop_RunUpdate, this);
-	render_Thread = new std::thread(&EngineProvider::ThreadLoop_RunRender, this);
+	render_Thread = new std::thread(&EngineProvider::RenderLoop, this);
 
+	// 修改引擎构建状态
 	buildEngine_state = 1;
 }
 
@@ -118,42 +133,37 @@ void EngineProvider::MainRunLoop() {
 	SceneManager::ReleaseScene();	// 场景模块
 }
 
-// 更新用线程
-void EngineProvider::ThreadLoop_RunUpdate() {
+// Win32线程回调更新处理
+void EngineProvider::CallbackUpdate() {
+
 	// 计时器
-	std::shared_ptr<Timer> update_timer = std::make_shared<Timer>();
-	update_timer->start();
+	if (update_timer == nullptr) {
+		update_timer = std::make_shared<Timer>();
+		update_timer->start();
+	}
 
-	// 更新循环
-	while (updateState) {
-		// 基础计时
-		update_timer->getStart();
+	// 更新
+	// 基础计时
+	update_timer->getStart();
 
+	{
 		// UI系统 更新
 		UIFactory::Update();
 
 		// Scene系统
 		SceneManager::UpdateScene();
-
-		// 结束计时
-		auto _time = update_timer->getOvertime();
-		auto fps_time = GetConfig_Fps();
-		if (fps_time > _time) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(fps_time - _time)));
-		}
 	}
 
-	// 修改状态值
-	{
-		std::unique_lock<std::mutex> lock(lock_update);
-		updateState = 2;
-		cv_update.notify_one();
+	// 结束计时
+	auto _time = update_timer->getOvertime();
+	auto fps_time = GetConfig_Fps();
+	if (fps_time > _time) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(fps_time - _time)));
 	}
-
 }
 
-// 渲染用线程
-void EngineProvider::ThreadLoop_RunRender() {
+// 独立线程渲染
+void EngineProvider::RenderLoop() {
 	// 计时器
 	std::shared_ptr<Timer> render_timer = std::make_shared<Timer>();
 	render_timer->start();
@@ -190,34 +200,16 @@ void EngineProvider::ThreadLoop_RunRender() {
 		}
 	}
 
-	// 修改状态值
-	{
-		std::unique_lock<std::mutex> lock(lock_render);
-		renderState = 2;
-		cv_render.notify_one();
-	}
 }
 
 // 等待线程结束
 void EngineProvider::WaittingThreadProcess() {
 	// 等待线程结束
-
-	// 更新线程
-	{
-		updateState = 0;
-		std::unique_lock<std::mutex> lock(lock_update);
-		cv_update.wait(lock, [&]() {
-			return updateState == 2;
-		});
-	}
-
-	// 渲染线程
-	{
-		renderState = 0;
-		std::unique_lock<std::mutex> lock(lock_render);
-		cv_render.wait(lock, [&]() {
-			return renderState == 2;
-		});
+	renderState = 0;
+	if (render_Thread) {
+		render_Thread->join();
+		delete render_Thread;
+		render_Thread = nullptr;
 	}
 }
 
